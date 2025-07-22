@@ -1,4 +1,4 @@
-name: Deploy Essentials to GitHub Pages
+name: essentials
 
 on:
   push:
@@ -7,11 +7,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v2
       
       - name: Create config file
         run: |
@@ -21,8 +18,7 @@ jobs:
           echo "};" >> config.js
       
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           branch: gh-pages
           folder: .
-          clean: true

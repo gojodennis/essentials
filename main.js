@@ -1,21 +1,15 @@
-// Supabase config is loaded from config.js
-// If SUPABASE_CONFIG is not defined, use fallback values for development
-const SUPABASE_URL = typeof SUPABASE_CONFIG !== 'undefined' ? SUPABASE_CONFIG.url : null;
-const SUPABASE_ANON_KEY = typeof SUPABASE_CONFIG !== 'undefined' ? SUPABASE_CONFIG.anonKey : null;
+// Supabase config
+const SUPABASE_URL = 'https://qckmkfmeomrqyzrdvjfh.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFja21rZm1lb21ycXl6cmR2amZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyMDQyMzUsImV4cCI6MjA2ODc4MDIzNX0.AELQiwg71KlIB5S4N-Hd1qsQiqgo97Uu8TyF-be1VIg';
 
 // Initialize Supabase client
 let supabase;
 try {
-  // Check if configuration exists
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-    throw new Error('Supabase configuration is missing. Please create a config.js file based on config.template.js');
-  }
-  
   supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   console.log('Supabase client initialized successfully');
 } catch (error) {
   console.error('Failed to initialize Supabase client:', error);
-  alert('Failed to connect to the database: ' + error.message + '\nPlease check the console for details.');
+  alert('Failed to connect to the database. Please check the console for details.');
 }
 
 let notes = [];
