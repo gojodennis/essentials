@@ -1,5 +1,5 @@
 # Ignore configuration file with sensitive credentials
-config.js
+
 
 # Ignore node modules if you add npm in the future
 node_modules/
