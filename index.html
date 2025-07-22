@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=600, initial-scale=1.0">
+  <title>essentials</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Inter:400,700|IBM+Plex+Sans:400,700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <main class="container">
+    <h1>essentials</h1>
+    <form id="note-form" autocomplete="off">
+      <textarea id="note-text" maxlength="200" placeholder="Write a note..." required></textarea>
+      <input id="note-name" type="text" maxlength="32" placeholder="Name (optional)">
+      <button type="submit">Post</button>
+    </form>
+    <section id="notes-feed"></section>
+  </main>
+  <script src="main.js"></script>
+</body>
+</html> 
