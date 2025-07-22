@@ -1,9 +1,16 @@
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 // Supabase config
 const SUPABASE_URL = 'https://qckmkfmeomrqyzrdvjfh.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFja21rZm1lb21ycXl6cmR2amZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyMDQyMzUsImV4cCI6MjA2ODc4MDIzNX0.AELQiwg71KlIB5S4N-Hd1qsQiqgo97Uu8TyF-be1VIg';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Initialize Supabase client
+let supabase;
+try {
+  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  console.log('Supabase client initialized successfully');
+} catch (error) {
+  console.error('Failed to initialize Supabase client:', error);
+  alert('Failed to connect to the database. Please check the console for details.');
+}
 
 let notes = [];
 
@@ -11,6 +18,35 @@ const form = document.getElementById('note-form');
 const noteText = document.getElementById('note-text');
 const noteName = document.getElementById('note-name');
 const notesFeed = document.getElementById('notes-feed');
+
+// Create loading indicator
+const loadingIndicator = document.createElement('div');
+loadingIndicator.className = 'loading-indicator';
+loadingIndicator.innerHTML = 'Loading...';
+loadingIndicator.style.display = 'none';
+document.querySelector('.container').appendChild(loadingIndicator);
+
+// Function to show/hide loading indicator
+function setLoading(isLoading) {
+  loadingIndicator.style.display = isLoading ? 'block' : 'none';
+  form.querySelector('button').disabled = isLoading;
+}
+
+// Check if Supabase connection is working
+async function checkSupabaseConnection() {
+  try {
+    const { data, error } = await supabase.from('notes').select('count', { count: 'exact', head: true });
+    if (error) {
+      console.error('Supabase connection check failed:', error);
+      return false;
+    }
+    console.log('Supabase connection successful');
+    return true;
+  } catch (err) {
+    console.error('Exception during Supabase connection check:', err);
+    return false;
+  }
+}
 
 function formatTime(ts) {
   const d = new Date(ts);
@@ -43,17 +79,29 @@ function renderNotes() {
 }
 
 async function fetchNotes() {
-  const { data, error } = await supabase
-    .from('notes')
-    .select('*')
-    .order('timestamp', { ascending: false });
-  if (error) {
-    console.error('Error fetching notes:', error);
-    notesFeed.innerHTML = '<div style="color:red">Failed to load notes.</div>';
-    return;
+  try {
+    setLoading(true);
+    console.log('Fetching notes from Supabase...');
+    const { data, error } = await supabase
+      .from('notes')
+      .select('*')
+      .order('timestamp', { ascending: false });
+    
+    if (error) {
+      console.error('Error fetching notes:', error);
+      notesFeed.innerHTML = `<div style="color:red">Failed to load notes: ${error.message}</div>`;
+      return;
+    }
+    
+    console.log('Notes fetched successfully:', data);
+    notes = data;
+    renderNotes();
+  } catch (err) {
+    console.error('Exception when fetching notes:', err);
+    notesFeed.innerHTML = `<div style="color:red">Failed to load notes: ${err.message}</div>`;
+  } finally {
+    setLoading(false);
   }
-  notes = data;
-  renderNotes();
 }
 
 form.addEventListener('submit', async e => {
@@ -61,17 +109,43 @@ form.addEventListener('submit', async e => {
   const text = noteText.value.trim();
   const name = noteName.value.trim() || 'Anonymous';
   if (!text) return;
-  const { error } = await supabase
-    .from('notes')
-    .insert([{ text, name }]);
-  if (error) {
-    console.error('Error posting note:', error);
-    alert('Failed to post note.');
-    return;
+  
+  try {
+    setLoading(true);
+    const timestamp = new Date().toISOString();
+    const noteData = { text, name, timestamp };
+    console.log('Posting new note:', noteData);
+    
+    const { error } = await supabase
+      .from('notes')
+      .insert([noteData]);
+    
+    if (error) {
+      console.error('Error posting note:', error);
+      alert(`Failed to post note: ${error.message}`);
+      return;
+    }
+    
+    console.log('Note posted successfully');
+    noteText.value = '';
+    noteName.value = '';
+    fetchNotes();
+  } catch (err) {
+    console.error('Exception when posting note:', err);
+    alert(`Failed to post note: ${err.message}`);
+  } finally {
+    setLoading(false);
   }
-  noteText.value = '';
-  noteName.value = '';
-  fetchNotes();
 });
 
-fetchNotes(); 
+// Initialize the app
+(async function init() {
+  setLoading(true);
+  const isConnected = await checkSupabaseConnection();
+  if (!isConnected) {
+    notesFeed.innerHTML = `<div style="color:red">Failed to connect to the database. Please check your internet connection and try again.</div>`;
+    setLoading(false);
+    return;
+  }
+  fetchNotes();
+})();
