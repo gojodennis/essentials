@@ -48,14 +48,20 @@ async function checkSupabaseConnection() {
   }
 }
 
+function formatToIST(rawTimestamp) {
+  const date = new Date(rawTimestamp + 'Z'); // Add Z to make sure it parses as UTC
+  return date.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+}
+
 function formatTime(ts) {
   const d = new Date(ts);
   const now = Date.now();
   const diff = Math.floor((now - d.getTime()) / 1000);
-  if (diff < 60) return 'just now';
+  if (diff < 5) return 'just now';
+  if (diff < 60) return `${diff} sec ago`;
   if (diff < 3600) return `${Math.floor(diff/60)} min ago`;
   if (diff < 86400) return `${Math.floor(diff/3600)} hr ago`;
-  return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+  return formatToIST(ts);
 }
 
 function escapeHtml(str) {
