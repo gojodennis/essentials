@@ -22,7 +22,7 @@ const notesFeed = document.getElementById('notes-feed');
 // Create loading indicator
 const loadingIndicator = document.createElement('div');
 loadingIndicator.className = 'loading-indicator';
-loadingIndicator.innerHTML = 'Loading...';
+loadingIndicator.innerHTML = 'Fetching...';
 loadingIndicator.style.display = 'none';
 document.querySelector('.container').appendChild(loadingIndicator);
 
