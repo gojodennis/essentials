@@ -4,10 +4,12 @@ body {
   font-family: 'Inter', 'IBM Plex Sans', Arial, sans-serif;
   margin: 0;
   min-height: 100vh;
+  font-size: 16px; /* Base font size for better mobile readability */
 }
+
 .container {
-  max-width: 600px;
-  margin: 40px auto;
+  max-width: 100%;
+  margin: 16px auto; /* Reduced from 40px for better mobile spacing */
   padding: 0 16px;
   display: flex;
   flex-direction: column;
@@ -28,28 +30,32 @@ form {
 }
 textarea, input[type="text"] {
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 1.1rem; /* Slightly larger text for mobile */
   border: 1px solid #e0e0e0;
   border-radius: 10px;
-  padding: 12px;
+  padding: 16px; /* Increased for better touch interaction */
   background: #fff;
   color: #000;
   resize: none;
+  line-height: 1.5; /* Better line spacing for readability */
 }
 textarea {
-  min-height: 60px;
-  max-height: 120px;
+  min-height: 8vh; /* Relative to screen height */
+  max-height: 20vh;
+  box-sizing: border-box; /* Include padding in height */
 }
 button {
   background: #000;
   color: #fff;
   border: none;
   border-radius: 10px;
-  padding: 10px 0;
-  font-size: 1rem;
+  padding: 16px 0; /* Increased for better touch target */
+  font-size: 1.1rem; /* Slightly larger text for mobile */
   font-weight: 700;
   cursor: pointer;
   transition: background 0.1s;
+  min-width: 48px; /* Minimum touch target size */
+  min-height: 48px;
 }
 button:hover {
   background: #222;
@@ -62,15 +68,10 @@ button:hover {
   transition: grid-template-columns 0.1s;
 }
 
-@media (min-width: 500px) {
+@media (max-width: 480px) {
   #notes-feed {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (min-width: 900px) {
-  #notes-feed {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr; /* Force single column on very small screens */
+    gap: 12px;
   }
 }
 
@@ -79,24 +80,25 @@ button:hover {
   border: 1.5px solid #e0e0e0;
   border-radius: 18px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-  padding: 18px 20px 14px 20px;
+  padding: 20px 24px 16px 24px; /* Slightly larger padding for mobile */
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   opacity: 0;
   animation: fadeIn 0.7s forwards;
-  min-height: 80px;
+  min-height: 96px;
   word-break: break-word;
-  /* Let notes have variable height */
+  box-sizing: border-box; /* Ensure padding doesn't overflow */
 }
 .note .meta {
-  font-size: 0.95rem;
+  font-size: 1rem; /* Increased for better readability */
   color: #888;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 .note .text {
-  font-size: 1.15rem;
+  font-size: 1.25rem; /* Increased for better readability */
   word-break: break-word;
+  line-height: 1.5; /* Improved line spacing for legibility */
 }
 
 /* Loading indicator styles */
